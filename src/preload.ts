@@ -17,5 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	contextBridge.exposeInMainWorld('electronAPI', {
 		openFormWindow: () => ipcRenderer.send('open-form-window'),
 		openSummaryWindow: () => ipcRenderer.send('open-summary-window'),
+		saveMood: (entry) => ipcRenderer.send('save-mood-entry', entry)
 	});
+
 })

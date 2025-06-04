@@ -10,21 +10,66 @@
 	
 	<div class="form:">
 		<div class="helper">
-			<p>Wednesday, 16:28, 04.06.2025</p>
+			<p id="currentDate"></p>
 		</div>
-		<div class="helper">
-			<label>Activity:</label>
-			<input type="text" placeholder="What is your heart engaged in, Princess?" name="activityInput" id="activityInput"/>
-		</div>
-		<div class="helper">
-			<label>Mood:</label>
-			<input type="text" placeholder="What color is your spirit today?" name="moodInput" id="moodInput"/>
-		</div>
-		<div class="helper">
-			<button style="margin-top:25px;" class="button-primary">Send</button>
-		</div>
+		<form id="moodForm">
+			<div class="helper">
+				<label>Activity:</label>
+				<input type="text" placeholder="What is your heart engaged in, Prinzessin?" name="activity" id="activity" required/>
+			</div>
+			<div class="helper">
+				<label>Mood:</label>
+				<input type="text" placeholder="What color is your spirit today?" name="mood" id="mood" required/>
+			</div>
+		
+			<div class="helper">
+				<button type="submit" style="margin-top:25px;" class="button-primary">Send</button>
+			</div>
+		</form>
 		
 	</div>
 	
 </body>
 </html>
+
+<script>
+  function padZero(n) {
+    return n < 10 ? '0' + n : n;
+  }
+
+  function formatFullDate(date) {
+    const dayName = date.toLocaleDateString(undefined, { weekday: 'long' });
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    const day = padZero(date.getDate());
+    const month = padZero(date.getMonth() + 1);
+    const year = date.getFullYear();
+
+    return `${dayName}, ${hours}:${minutes}, ${day}.${month}.${year}`;
+  }
+
+  const now = new Date();
+  const dateElement = document.getElementById('currentDate');
+  if (dateElement) {
+    dateElement.textContent = formatFullDate(now);
+  }
+
+ 	const form = document.getElementById('moodForm');
+
+	form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const activity = form.activity.value;
+    const mood = form.mood.value;
+
+    const now = new Date();
+
+    window.electronAPI.saveMood({
+      timestamp: now.toISOString(),
+      activity,
+      mood,
+    });
+    
+    form.reset();
+    alert('Mood saved!');
+  });
+</script>

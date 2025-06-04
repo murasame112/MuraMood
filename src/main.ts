@@ -1,6 +1,8 @@
 import { ipcMain } from 'electron';
 import {app, BrowserWindow} from 'electron/main';
 import path from 'node:path';
+import fs from 'fs';
+import fsPromises from 'fs/promises';
 
 let mainWindow: BrowserWindow | null = null;
 let formWindow: BrowserWindow | null = null;
@@ -92,4 +94,27 @@ ipcMain.on('open-form-window', () => {
 
 ipcMain.on('open-summary-window', () => {
   createSummaryWindow();
+});
+
+
+ipcMain.on('save-mood-entry', async (_event, entry) => {
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const dataDir = path.join(app.getPath('userData'), 'data');
+
+  try {
+    await fsPromises.mkdir(dataDir, { recursive: true });
+    const filePath = path.join(dataDir, `${dateStr}.json`);
+    let existing = [];
+
+    if (fs.existsSync(filePath)) {
+      const content = await fsPromises.readFile(filePath, 'utf-8');
+      existing = JSON.parse(content);
+    }
+    existing.push(entry);
+    await fsPromises.writeFile(filePath, JSON.stringify(existing, null, 2), 'utf-8');
+		
+  } catch (err) {
+    console.error('Failed to save mood:', err);
+  }
 });
