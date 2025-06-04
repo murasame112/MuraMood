@@ -98,6 +98,9 @@ function createFormWindow(){
 	formWindow = new BrowserWindow({
     width: 400,
     height: 350,
+		show: false,
+		alwaysOnTop: false,
+		focusable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,
@@ -106,6 +109,10 @@ function createFormWindow(){
   });
 
 	formWindow.loadFile('public/form.html');
+
+	formWindow.once("ready-to-show", () => {
+		formWindow.showInactive();
+	}); 
 
 	formWindow.on('closed', () => {
     formWindow = null;
