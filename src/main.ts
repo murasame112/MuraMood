@@ -13,7 +13,7 @@ let tray: Tray | null = null;
 
 
 function createTray() {
-  const iconPath = path.join(__dirname, 'icon.png'); // <- ścieżka do Twojej ikonki
+	const iconPath = path.join(__dirname, 'icon.png');
   const trayIcon = nativeImage.createFromPath(iconPath);
   tray = new Tray(trayIcon);
 
@@ -26,11 +26,22 @@ function createTray() {
       }
     },
     {
-      label: 'Quit',
-      click: () => {
-        trackingActive = false;
-        app.quit();
-      }
+			label: 'Quit',
+			click: () => {
+				trackingActive = false;
+
+				if (nextTickTimeout) {
+					clearTimeout(nextTickTimeout);
+					nextTickTimeout = null;
+				}
+
+				// Usuń tray, by Electron mógł zamknąć wszystkie zasoby
+				if (tray) {
+					tray.destroy(); // <- kluczowe!
+				}
+
+				app.quit();
+			}
     }
   ]);
 
