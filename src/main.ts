@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, Tray, Menu, nativeImage } from 'electron';
 import {app, BrowserWindow} from 'electron/main';
 import path from 'node:path';
 import fs from 'fs';
@@ -9,7 +9,39 @@ let formWindow: BrowserWindow | null = null;
 let summaryWindow: BrowserWindow | null = null;
 let trackingActive = false;
 let nextTickTimeout: NodeJS.Timeout | null = null;
+let tray: Tray | null = null;
 
+
+function createTray() {
+  const iconPath = path.join(__dirname, 'icon.png'); // <- ścieżka do Twojej ikonki
+  const trayIcon = nativeImage.createFromPath(iconPath);
+  tray = new Tray(trayIcon);
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Display',
+      click: () => {
+        if (!mainWindow) createMainWindow();
+        else mainWindow.show();
+      }
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        trackingActive = false;
+        app.quit();
+      }
+    }
+  ]);
+
+  tray.setToolTip('MuraMood');
+  tray.setContextMenu(contextMenu);
+
+  tray.on('double-click', () => {
+    if (!mainWindow) createMainWindow();
+    else mainWindow.show();
+  });
+}
 
 
 function createMainWindow() {
@@ -24,9 +56,10 @@ function createMainWindow() {
 	})
 	mainWindow.loadFile('public/index.html')
 
-	mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+	mainWindow.on('close', (event) => {
+		event.preventDefault();
+		mainWindow?.hide();
+	});
 }
 
 function createFormWindow(){
@@ -107,6 +140,9 @@ function broadcastStatus() {
 
 app.whenReady().then(() => {
 	createMainWindow();
+	createTray();
+	setTimeout(broadcastStatus, 500);
+
 	app.on('activate', () => {
 		if (BrowserWindow.getAllWindows().length === 0){
 			createMainWindow();
@@ -115,13 +151,7 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin'){
-		app.quit();
-	}
-});
 
-app.on("ready", () => {
-  setTimeout(broadcastStatus, 500);
 });
 
 ipcMain.on('open-form-window', () => {
