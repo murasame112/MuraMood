@@ -61,3 +61,21 @@ button{
 .color-secondary{
 	color:var(--secondary);
 }
+
+.form{
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+input{
+	width: 250px;
+}
+
+.helper{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}

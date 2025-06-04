@@ -32,7 +32,7 @@ function createFormWindow(){
 	
 	formWindow = new BrowserWindow({
     width: 400,
-    height: 300,
+    height: 350,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
