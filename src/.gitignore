@@ -2,3 +2,5 @@ node_modules
 template.png
 plan.md
 notes.txt
+dist
+data
