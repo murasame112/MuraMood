@@ -1,3 +1,7 @@
+import { contextBridge, ipcRenderer } from 'electron';
+
+
+
 window.addEventListener('DOMContentLoaded', () => {
 	const replaceText = (selector, text) => {
 		const element = document.getElementById(selector);
@@ -9,4 +13,9 @@ window.addEventListener('DOMContentLoaded', () => {
 	for(const type of ['chrome', 'node', 'electron']){
 		replaceText(`${type}-version`, process.versions[type]);
 	}
+
+	contextBridge.exposeInMainWorld('electronAPI', {
+		openFormWindow: () => ipcRenderer.send('open-form-window'),
+		openSummaryWindow: () => ipcRenderer.send('open-summary-window'),
+	});
 })
