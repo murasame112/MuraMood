@@ -140,8 +140,9 @@ function scheduleNextTick() {
 
   const now = new Date();
   const next = new Date(now);
-
-  next.setMinutes(0); next.setSeconds(0); next.setMilliseconds(0);
+  next.setMinutes(0);
+  next.setSeconds(0);
+  next.setMilliseconds(0);
   next.setHours(now.getHours() + 1);
 
   const delay = next.getTime() - now.getTime();

@@ -24,6 +24,7 @@
 			"dist/**/*",
 			"public/**/*",
 			"main.js",
+			"styles/*",
 			"preload.js",
 			"node_modules/**/*",
 			"package.json"
