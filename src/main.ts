@@ -35,9 +35,8 @@ function createTray() {
 					nextTickTimeout = null;
 				}
 
-				// Usuń tray, by Electron mógł zamknąć wszystkie zasoby
 				if (tray) {
-					tray.destroy(); // <- kluczowe!
+					tray.destroy();
 				}
 
 				app.quit();
@@ -218,4 +217,24 @@ ipcMain.on("stop-tracking", () => {
     nextTickTimeout = null;
   }
 	broadcastStatus();
+});
+
+ipcMain.handle('get-mood-summary', async () => {
+  const dataDir = path.join(app.getPath('userData'), 'data');
+  const summary: Record<string, any[]> = {};
+
+  try {
+    const files = fs.readdirSync(dataDir).filter(file => file.endsWith('.json'));
+
+    for (const file of files) {
+      const filePath = path.join(dataDir, file);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      summary[file.replace('.json', '')] = JSON.parse(content);
+    }
+
+    return summary;
+  } catch (err) {
+    console.error("Failed to read summary:", err);
+    return {};
+  }
 });

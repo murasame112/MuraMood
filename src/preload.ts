@@ -10,5 +10,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onStatusChange: (callback: (status: string) => void) => {
     ipcRenderer.on('status-changed', (event, status) => callback(status));
   },
+	getMoodSummary: () => ipcRenderer.invoke('get-mood-summary'),
   saveMood: (entry) => ipcRenderer.send('save-mood-entry', entry),
 });
