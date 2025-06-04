@@ -87,7 +87,6 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('open-form-window', () => {
-	console.log('test');
   createFormWindow();
 });
 
