@@ -34,9 +34,9 @@
       const thead = document.createElement('thead');
       thead.innerHTML = `
         <tr>
-          <th style="border: 1px solid #ccc; padding: 6px;">Godzina</th>
-          <th style="border: 1px solid #ccc; padding: 6px;">Nastrój</th>
-          <th style="border: 1px solid #ccc; padding: 6px;">Aktywność</th>
+          <th style="border: 1px solid var(--misc); padding: 6px;">Godzina</th>
+          <th style="border: 1px solid var(--misc); padding: 6px;">Nastrój</th>
+          <th style="border: 1px solid var(--misc); padding: 6px;">Aktywność</th>
         </tr>
       `;
       table.appendChild(thead);
@@ -45,9 +45,9 @@
       entries.forEach(entry => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="border: 1px solid #ccc; padding: 6px;">${extractHour(entry.timestamp)}</td>
-          <td style="border: 1px solid #ccc; padding: 6px;">${entry.mood}</td>
-          <td style="border: 1px solid #ccc; padding: 6px;">${entry.activity}</td>
+          <td style="border: 1px solid var(--misc); padding: 6px;">${extractHour(entry.timestamp)}</td>
+          <td style="border: 1px solid var(--misc); padding: 6px;">${entry.mood}</td>
+          <td style="border: 1px solid var(--misc); padding: 6px;">${entry.activity}</td>
         `;
         tbody.appendChild(tr);
       });
