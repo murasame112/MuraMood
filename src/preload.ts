@@ -2,7 +2,6 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  openFormWindow: () => ipcRenderer.send('open-form-window'),
   openSummaryWindow: () => ipcRenderer.send('open-summary-window'),
   formSubmitted: () => ipcRenderer.send('form-submitted'),
   startTracking: () => ipcRenderer.send("start-tracking"),
@@ -11,5 +10,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('status-changed', (event, status) => callback(status));
   },
 	getMoodSummary: () => ipcRenderer.invoke('get-mood-summary'),
+	  enableAutoLaunch: () => ipcRenderer.invoke('enable-auto-launch'),
+  disableAutoLaunch: () => ipcRenderer.invoke('disable-auto-launch'),
+  checkAutoLaunch: () => ipcRenderer.invoke('check-auto-launch'),
   saveMood: (entry) => ipcRenderer.send('save-mood-entry', entry),
 });

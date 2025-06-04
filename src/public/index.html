@@ -1,77 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-		<link rel="stylesheet" href="../styles/index.css">
-    <title>MuraMood</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-</head>
-<body>
-		<button id="openForm" class="button-secondary">open form</button>
-		<button id="openSummary" class="button-secondary">open summary</button>
-		<div class="content">
-			<p class="title"><span class="color-primary">Mura</span><span class="color-secondary">Mood</span></p>
-			<div>
-				<button class="button-primary" id="start">Start</button>
-				<button class="button-secondary" id="stop">Stop</button>
-			</div>
-			<div>
-				<p>Status: <span id="status">Loading...</span></p>
-			</div>
 
-			
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../styles/index.css">
+	<title>MuraMood</title>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+</head>
+
+<body>
+
+	<div class="content">
+		<p class="title"><span class="color-primary">Mura</span><span class="color-secondary">Mood</span></p>
+		<div style="margin-top:10px; margin-bottom: 10px;">
+			<label class="checkbox-label">
+				<input type="checkbox" id="autostart-checkbox" />
+				Launch MuraMood at system startup
+			</label>
 		</div>
+		<div>
+			<button class="button-primary" id="start">Start</button>
+			<button class="button-secondary" id="stop">Stop</button>
+		</div>
+		<div>
+			<p>Status: <span id="status">Loading...</span></p>
+		</div>
+		<div>
+			<button id="openSummary" class="button-secondary">open summary</button>
+		</div>
+
+	</div>
 </body>
+
 </html>
 
 <script>
-	// document.addEventListener('DOMContentLoaded', () => {
-	// 	const openFormBtn = document.getElementById('openForm');
-	// 	const openSummaryBtn = document.getElementById('openSummary'); 
-
-	// 	openFormBtn.addEventListener('click', () => {
-	// 		window.electronAPI.openFormWindow();
-	// 	});
-
-	// 	if (openSummaryBtn) {
-	// 		openSummaryBtn.addEventListener('click', () => {
-	// 			window.electronAPI.openSummaryWindow();
-	// 		});
-	// 	}
-
-	// 	document.getElementById("start").addEventListener("click", () => {
-	// 		window.electronAPI.startTracking();
-	// 	});
-
-	// 	document.getElementById("stop").addEventListener("click", () => {
-	// 		window.electronAPI.stopTracking();
-	// 	});
-
-	// 	if (window.electronAPI && window.electronAPI.onStatusChange) {
-  //     window.electronAPI.onStatusChange((status) => {
-  //       const statusEl = document.getElementById('status');
-  //       statusEl.textContent = status;
-  //       statusEl.style.color = status === 'Running' ? 'green' : 'red';
-  //     });
-  //   } else {
-  //     console.error('electronAPI lub onStatusChange nie jest dostępne');
-  //   }
-	// });
-
-// ============================
-
 	document.addEventListener('DOMContentLoaded', () => {
-  console.log('window.electronAPI:', window.electronAPI);
-  if (window.electronAPI) {
-    console.log('electronAPI keys:', Object.keys(window.electronAPI));
-  }
-  
-		const openFormBtn = document.getElementById('openForm');
-		const openSummaryBtn = document.getElementById('openSummary'); 
-
-		openFormBtn.addEventListener('click', () => {
-			window.electronAPI.openFormWindow();
-		});
+		const openSummaryBtn = document.getElementById('openSummary');
 
 		if (openSummaryBtn) {
 			openSummaryBtn.addEventListener('click', () => {
@@ -87,15 +52,29 @@
 			window.electronAPI.stopTracking();
 		});
 
-  if (window.electronAPI && typeof window.electronAPI.onStatusChange === 'function') {
-    window.electronAPI.onStatusChange((status) => {
-      const statusEl = document.getElementById('status');
-      statusEl.textContent = status;
-      statusEl.style.color = status === 'Running' ? 'green' : 'red';
-    });
-  } else {
-    console.error('electronAPI lub onStatusChange nie jest dostępne');
-  }
-});
+		if (window.electronAPI && typeof window.electronAPI.onStatusChange === 'function') {
+			window.electronAPI.onStatusChange((status) => {
+				const statusEl = document.getElementById('status');
+				statusEl.textContent = status;
+				statusEl.style.color = status === 'Running. You can close this window now.' ? 'green' : 'red';
+			});
+		} else {
+			console.error('electronAPI lub onStatusChange nie jest dostępne');
+		}
+
+		const checkbox = document.getElementById('autostart-checkbox');
+
+		window.electronAPI.checkAutoLaunch().then(enabled => {
+			checkbox.checked = enabled;
+		});
+
+		checkbox.addEventListener('change', () => {
+			if (checkbox.checked) {
+				window.electronAPI.enableAutoLaunch();
+			} else {
+				window.electronAPI.disableAutoLaunch();
+			}
+		});
+	});
 
 </script>

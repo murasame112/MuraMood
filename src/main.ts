@@ -11,6 +11,23 @@ let trackingActive = false;
 let nextTickTimeout: NodeJS.Timeout | null = null;
 let tray: Tray | null = null;
 
+export function enableAutoLaunch() {
+  app.setLoginItemSettings({
+    openAtLogin: true,
+    path: app.getPath('exe'),
+  });
+}
+
+export function disableAutoLaunch() {
+  app.setLoginItemSettings({
+    openAtLogin: false,
+  });
+}
+
+export function isAutoLaunchEnabled(): boolean {
+  const settings = app.getLoginItemSettings();
+  return settings.openAtLogin;
+}
 
 function createTray() {
 	const iconPath = path.join(__dirname, 'icon.png');
@@ -124,11 +141,8 @@ function scheduleNextTick() {
   const now = new Date();
   const next = new Date(now);
 
-  next.setSeconds(0);
-  next.setMilliseconds(0);
-  next.setMinutes(now.getMinutes() + 1);
-  // next.setMinutes(0); next.setSeconds(0); next.setMilliseconds(0);
-  // next.setHours(now.getHours() + 1);
+  next.setMinutes(0); next.setSeconds(0); next.setMilliseconds(0);
+  next.setHours(now.getHours() + 1);
 
   const delay = next.getTime() - now.getTime();
 
@@ -141,7 +155,7 @@ function scheduleNextTick() {
 }
 
 function broadcastStatus() {
-  const status = trackingActive ? "Running" : "Stopped";
+  const status = trackingActive ? "Running. You can close this window now." : "Stopped. To quit this app, use tray icon (arrow next to system clock).";
   BrowserWindow.getAllWindows().forEach(win => {
     win.webContents.send('status-changed', status);
   });
@@ -162,10 +176,6 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
 
-});
-
-ipcMain.on('open-form-window', () => {
-  createFormWindow();
 });
 
 ipcMain.on('open-summary-window', () => {
@@ -238,3 +248,7 @@ ipcMain.handle('get-mood-summary', async () => {
     return {};
   }
 });
+
+ipcMain.handle('enable-auto-launch', () => enableAutoLaunch());
+ipcMain.handle('disable-auto-launch', () => disableAutoLaunch());
+ipcMain.handle('check-auto-launch', () => isAutoLaunchEnabled());

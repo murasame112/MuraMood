@@ -1,16 +1,43 @@
 {
 	"main": "dist/main.js",
+	"name": "muramood",
+	"version": "1.0.0",
+	"description": "Mood tracking app running in background",
+	"author": "murasame112",
 	"scripts": {
 		"build": "tsc",
+		"dist": "npm run build && electron-builder",
 		"start": "npm run build && electron ."
 	},
 	"dependencies": {
 		"@types/electron": "^1.6.12",
 		"@types/node": "^22.15.29",
 		"cpy": "^11.1.0",
-		"electron": "^36.4.0",
 		"nodemon": "^3.1.10",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3"
+	},
+	"build": {
+		"appId": "com.twojanazwa.muramood",
+		"productName": "MuraMood",
+		"files": [
+			"dist/**/*",
+			"public/**/*",
+			"main.js",
+			"preload.js",
+			"node_modules/**/*",
+			"package.json"
+		],
+		"directories": {
+			"buildResources": "assets"
+		},
+		"win": {
+			"target": "nsis",
+			"icon": "assets/icon.ico"
+		}
+	},
+	"devDependencies": {
+		"electron": "^36.4.0",
+		"electron-builder": "^26.0.12"
 	}
 }
