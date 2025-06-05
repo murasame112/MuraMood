@@ -99,8 +99,8 @@ function createFormWindow(){
     width: 400,
     height: 350,
 		show: false,
-		alwaysOnTop: false,
-		focusable: false,
+		alwaysOnTop: true,
+		focusable: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,
@@ -147,6 +147,9 @@ function scheduleNextTick() {
 
   const now = new Date();
   const next = new Date(now);
+	  // next.setSeconds(0);
+		// next.setMilliseconds(0);
+		// next.setMinutes(now.getMinutes() + 1);
   next.setMinutes(0);
   next.setSeconds(0);
   next.setMilliseconds(0);
